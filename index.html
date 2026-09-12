@@ -3,256 +3,689 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Siddhant Accounting Services Dabra - Vendor Portal</title>
+    <title>Siddhant Accounting Services Dabra</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #eef2f3; margin: 0; padding: 20px; }
-        .container { max-width: 1050px; margin: auto; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h2 { color: #2c3e50; text-align: center; margin-bottom: 25px; border-bottom: 2px solid #ecf0f1; padding-bottom: 10px; }
-        h3 { color: #34495e; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f4f7f6; color: #333; scroll-behavior: smooth; }
+        header { background: linear-gradient(135deg, #0056b3, #003d82); color: white; padding: 20px; text-align: center; position: relative; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        header h1 { font-size: 26px; margin-bottom: 5px; }
+        header p { font-size: 13px; color: #d1e7ff; }
+        .top-login-btn { position: absolute; right: 20px; top: 20px; background-color: #ffc107; color: #000; border: none; padding: 8px 15px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        
+        /* Menu Bar Styling */
+        .menu-bar { background-color: #003d82; display: flex; justify-content: center; flex-wrap: wrap; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .menu-bar a { color: white; padding: 12px 20px; text-decoration: none; font-size: 14px; font-weight: 600; transition: background 0.3s; display: inline-block; }
+        .menu-bar a:hover { background-color: #0056b3; }
+        .menu-bar a.tally-menu { background-color: #ffc107; color: #000; }
+        .menu-bar a.tally-menu:hover { background-color: #e0a800; }
+
+        .container { max-width: 1100px; margin: 20px auto; padding: 0 15px; }
+        .section-title { text-align: center; margin: 30px 0 20px; color: #0056b3; font-size: 22px; }
+        .login-box, .download-box { background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 30px; border: 2px solid #0056b3; }
+        .login-box h2, .download-box h2 { color: #0056b3; font-size: 20px; margin-bottom: 15px; text-align: center; }
+        .login-inputs { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 10px; flex-direction: column; align-items: center; }
+        .login-inputs input { padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; width: 280px; }
+        .login-btn { background-color: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; width: 280px; }
+        .logout-btn { background-color: #dc3545; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; float: right; }
+        #vendor-panel { display: none; }
+        
+        /* Global Notice Bar */
+        .announcement-bar { background: #fff3cd; color: #856404; padding: 10px 15px; border: 1px solid #ffeeba; border-radius: 4px; margin-bottom: 25px; font-weight: 600; font-size: 14px; display: flex; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.03); }
+        .announcement-bar span { background: #ffc107; color: #000; padding: 3px 8px; border-radius: 3px; font-size: 12px; margin-right: 12px; text-transform: uppercase; font-weight: bold; }
+
+        .status-update-box { background: #d1ecf1; color: #0c5460; padding: 12px; border: 1px solid #bee5eb; border-radius: 6px; margin-bottom: 20px; font-size: 13px; }
+        .status-update-box strong { display: block; margin-bottom: 3px; font-size: 14px; }
+
+        /* Live Update Board Styling */
+        .live-board { background: #e8f5e9; border: 2px solid #4caf50; border-radius: 6px; padding: 15px; margin-bottom: 20px; }
+        .live-board h4 { color: #2e7d32; font-size: 16px; margin-bottom: 10px; border-bottom: 1px dashed #a5d6a7; padding-bottom: 5px; }
+        .update-item { background: #fff; padding: 10px; border-radius: 4px; margin-bottom: 8px; border-left: 4px solid #4caf50; font-size: 13px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+
+        /* Panel Sections Sequence */
+        .panel-section { background: #f9fbfc; padding: 20px; border-radius: 6px; border: 1px solid #d0e1fd; margin-bottom: 20px; }
+        .panel-section h3 { color: #0056b3; font-size: 17px; margin-bottom: 12px; border-bottom: 2px solid #0056b3; padding-bottom: 5px; }
+        
+        /* Price Badge */
+        .price-badge { background: #28a745; color: white; padding: 3px 10px; border-radius: 12px; font-size: 14px; font-weight: bold; float: right; }
+        .price-badge.lost { background: #d9534f; }
+        .price-badge.surrender { background: #6f42c1; }
+
+        /* Legal Warning Box for Surrender */
+        .legal-warning { background: #f8d7da; color: #721c24; padding: 10px 12px; border: 1px solid #f5c6cb; border-radius: 4px; font-size: 13px; margin-bottom: 12px; line-height: 1.4; }
+
+        /* Search Box */
+        .search-row { display: flex; gap: 10px; flex-wrap: wrap; }
+        .search-row input { flex: 1; min-width: 220px; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
+        .search-btn { background-color: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        
+        #result-area { margin-top: 15px; font-size: 14px; }
+        .result-card { background: #fff; padding: 15px; border-radius: 6px; border: 1px solid #0056b3; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+
+        /* UPI & Count Layout */
+        .flex-box { display: flex; gap: 15px; flex-wrap: wrap; align-items: center; justify-content: space-between; }
+        .upi-box { text-align: center; flex: 1; min-width: 200px; }
+        .upi-box img { width: 120px; height: 120px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 5px; }
+        
+        .count-box { background: #e2f0d9; padding: 15px; border-radius: 6px; border: 1px solid #c8e1b7; text-align: center; flex: 1; min-width: 200px; }
+        .count-box h4 { font-size: 14px; color: #385723; margin-bottom: 5px; }
+        .count-number { font-size: 26px; font-weight: bold; color: #385723; }
+
+        /* Forms Styling */
+        .service-form { display: flex; flex-direction: column; gap: 12px; }
+        .service-form input, .service-form textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
+        .service-form label { font-size: 13px; font-weight: 600; color: #444; margin-bottom: 3px; display: block; }
+        
+        .payment-box-inline { background: #fff; padding: 15px; border: 1px solid #d9534f; border-radius: 6px; text-align: center; margin-top: 5px; }
+        .payment-box-inline img { width: 110px; height: 110px; border: 1px solid #ddd; margin-bottom: 5px; }
+
+        .submit-service-btn { background-color: #d9534f; color: white; border: none; padding: 12px; border-radius: 4px; font-weight: bold; cursor: pointer; width: 100%; font-size: 15px; }
+        .submit-service-btn:hover { background-color: #c9302c; }
+
+        /* Button Layout Styles */
+        .dl-btn-group { display: flex; gap: 10px; margin-top: 10px; flex-direction: column; }
+        .dl-row { display: flex; gap: 10px; flex-wrap: wrap; }
+        .dl-btn { flex: 1; min-width: 130px; background-color: #28a745; color: white; padding: 10px; text-align: center; text-decoration: none; border-radius: 4px; font-size: 13px; font-weight: bold; cursor: pointer; border: none; display: block; }
+        .dl-btn.epan { background-color: #ffc107; color: #000; }
+        .pdf-btn { background-color: #17a2b8; color: white; }
+        
+        /* WhatsApp Direct Send Box */
+        .wa-send-section { margin-top: 10px; background: #e8f5e9; padding: 10px; border-radius: 6px; border: 1px solid #c8e1b7; }
+        .wa-send-section input { width: 100%; padding: 8px; margin-bottom: 6px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; }
+        .wa-send-btn { background-color: #25d366; color: white; border: none; padding: 8px; width: 100%; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 13px; }
+
+        .tracking-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; margin-bottom: 40px; }
+        .tracking-card { background: white; padding: 20px; border-radius: 8px; text-align: center; border-top: 4px solid #17a2b8; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        .service-card { background: white; padding: 20px; border-radius: 8px; border-left: 5px solid #0056b3; box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: space-between; }
+        .price { font-size: 18px; font-weight: bold; color: #28a745; margin-bottom: 10px; }
+        .details-box { background: #f9f9f9; padding: 10px; border-radius: 5px; font-size: 12px; border: 1px dashed #ccc; margin-bottom: 15px; }
+        .btn { background-color: #0056b3; color: white; padding: 8px 12px; border-radius: 4px; text-align: center; text-decoration: none; display: block; font-size: 13px; font-weight: bold; }
+        .form-container { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 40px; }
         .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; color: #555; }
-        input, select { width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 5px; font-size: 14px; }
-        button { background: #27ae60; color: white; border: none; padding: 12px 15px; cursor: pointer; border-radius: 5px; font-size: 16px; width: 100%; font-weight: bold; transition: 0.3s; }
-        button:hover { background: #219653; }
-        .section { display: none; margin-top: 20px; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px; background: #fafafa; }
-        .active { display: block; }
-        table { width: 100%; border-collapse: collapse; margin-top: 12px; background: white; }
-        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; font-size: 13px; }
-        th { background: #2c3e50; color: white; }
-        tr:nth-child(even) { background-color: #f9f9f9; }
-        .logout-btn { background: #e74c3c; width: auto; float: right; padding: 8px 15px; font-size: 14px; }
-        .logout-btn:hover { background: #c0392b; }
-        .wa-btn { background: #25D366; padding: 6px 10px; color: white; text-decoration: none; border-radius: 4px; font-size: 11px; display: inline-block; margin-top: 4px; font-weight: bold; }
-        .dl-btn { background: #2980b9; padding: 6px 10px; color: white; text-decoration: none; border-radius: 4px; font-size: 11px; display: inline-block; font-weight: bold; }
-        .pending-text { color: #e67e22; font-size: 12px; font-weight: bold; }
-        .service-box { border-left: 4px solid #3498db; padding-left: 15px; margin-bottom: 25px; }
+        .form-group label { display: block; font-size: 13px; margin-bottom: 5px; font-weight: 600; }
+        .form-group input, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
+        .submit-btn { background-color: #28a745; color: white; border: none; padding: 12px; width: 100%; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        footer { background-color: #222; color: white; text-align: center; padding: 15px; font-size: 13px; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>Siddhant Accounting Services Dabra - Vendor Portal</h2>
+    <header>
+        <h1>Siddhant Accounting Services Dabra</h1>
+        <p>Dabra (M.P.) | All Digital & Accounting Solutions</p>
+        <button class="top-login-btn" onclick="scrollToLogin()">🔐 वेंडर लॉगिन</button>
+    </header>
 
-    <!-- लॉगिन सेक्शन -->
-    <div id="login-section" class="section active">
-        <h3>वेंडर लॉगिन (Vendor Login)</h3>
-        <div class="form-group">
-            <label>यूज़र आईडी (User ID):</label>
-            <input type="text" id="loginUser" placeholder="अपना यूजर आईडी डालें">
-        </div>
-        <div class="form-group">
-            <label>पासवर्ड (Password):</label>
-            <input type="password" id="loginPass" placeholder="पासवर्ड डालें">
-        </div>
-        <button onclick="loginVendor()">लॉगिन करें</button>
-        <p id="loginMsg" style="color:red; margin-top:10px; text-align:center; font-weight:bold;"></p>
+    <!-- Menu Bar -->
+    <div class="menu-bar">
+        <a href="#">🏠 होम (Home)</a>
+        <a href="#forms">📥 PAN Forms</a>
+        <a href="#register">✨ नया रजिस्ट्रेशन</a>
+        <a href="#enquiry">📞 संपर्क करें</a>
+        <a href="#" class="tally-menu" onclick="alert('⚡ Tally Accounting Service: यह सेवा भविष्य के अपडेट में बहुत जल्द लाइव की जाएगी!')">📊 Tally Accounting Service (Coming Soon)</a>
     </div>
 
-    <!-- वेंडर डैशबोर्ड सेक्शन -->
-    <div id="dashboard-section" class="section">
-        <button class="logout-btn" onclick="logout()">लॉग आउट</button>
-        <h3 id="welcomeMsg">स्वागतम्</h3>
-        <p id="vendorEmailText" style="color: #666; font-size: 14px; margin-top: -5px;"></p>
-        <hr>
+    <div class="container">
 
-        <div class="service-box">
-            <h3>नई सर्विस रिक्वेस्ट भेजें</h3>
-            <div class="form-group">
-                <label>सर्विस चुनें (Select Service):</label>
-                <select id="serviceType">
-                    <option value="FIND_PAN">Find PAN (पैन ढूंढें)</option>
-                    <option value="LOST_PAN">Lost PAN (खोया हुआ पैन / रीप्रिंट)</option>
-                    <option value="SURRENDER">Surrender PAN (पैन सरेंडर)</option>
-                    <option value="NEW_PAN">New PAN Card (नया पैन कार्ड)</option>
-                    <option value="CORRECTION_PAN">PAN Correction (पैन सुधार)</option>
-                    <option value="PVC_CARD">PVC Print Card (पीवीसी कार्ड प्रिंट)</option>
-                    <option value="AYUSHMAN">Ayushman Card (आयुष्मान कार्ड)</option>
-                    <option value="VOTER_ID">Voter ID Service (वोटर आईडी)</option>
-                    <option value="OTHER_WORK">Other Digital Service (अन्य कार्य)</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>ग्राहक का नाम (Customer Name):</label>
-                <input type="text" id="custName" placeholder="ग्राहक का पूरा नाम">
-            </div>
-            <div class="form-group">
-                <label>कूपन या आधार/पैन नंबर (Doc / Coupon Number):</label>
-                <input type="text" id="docNum" placeholder="नंबर दर्ज करें">
-            </div>
-            <div class="form-group">
-                <label>ग्राहक का WhatsApp नंबर (Customer WhatsApp No):</label>
-                <input type="text" id="custPhone" placeholder="जैसे: 9827xxxxxx">
-            </div>
-            <button onclick="submitServiceRequest()">रिक्वेस्ट सबमिट करें</button>
-            <p id="reqMsg" style="color:green; margin-top:10px; font-weight:bold;"></p>
+        <!-- GLOBAL ANNOUNCEMENT BAR -->
+        <div class="announcement-bar">
+            <span>सूचना / Notice</span>
+            <marquee behavior="scroll" direction="left" scrollamount="5">
+                ⚠️ Siddhant Accounting Services Dabra पोर्टल पर आपका स्वागत है! आवश्यक PAN PDF Forms और नया वेंडर रजिस्ट्रेशन नीचे उपलब्ध हैं।
+            </marquee>
         </div>
 
-        <hr style="margin: 30px 0;">
-
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h3>आपकी सभी भेजी गई रिक्वेस्ट और स्टेटस</h3>
-            <button onclick="loadVendorData()" style="background: #2980b9; width: auto; padding: 8px 15px; font-size: 14px;">डेटा रिफ्रेश करें</button>
+        <!-- PUBLIC SECTION: PAN PDF Forms Download -->
+        <div class="panel-section" id="forms" style="border-color: #17a2b8; background: #f0fdf4;">
+            <h3 style="color: #17a2b8; border-color: #17a2b8;">📥 PAN PDF Forms Download (सभी के लिए उपलब्ध)</h3>
+            <p style="font-size: 13px; color: #555; margin-bottom: 12px; text-align: center;">आवश्यक फॉर्म डाउनलोड करने के लिए नीचे क्लिक करें:</p>
+            <div class="dl-row">
+                <a href="https://tinpan.proteantech.in/downloads/pan/download/Form%2093.pdf" target="_blank" class="dl-btn pdf-btn">New PAN Form</a>
+                <a href="https://tinpan.proteantech.in/downloads/pan/download/PAN%20CR%20individual.pdf" target="_blank" class="dl-btn pdf-btn">Correction Form</a>
+                <a href="https://tinpan.proteantech.in/downloads/pan/Annexure%20A_Prescribed%20format%20of%20Certificate%20issued%20for%20Indetity%20&%20Address%20by%20MPMLA%20Municipal%20Coun.pdf" target="_blank" class="dl-btn pdf-btn">Annexure Form</a>
+            </div>
         </div>
 
-        <div class="form-group" style="margin-top: 15px;">
-            <label>🔍 सर्च करें (Filter):</label>
-            <input type="text" id="searchBox" placeholder="कूपन नंबर, नाम या मोबाइल नंबर टाइप करें..." onkeyup="filterTables()">
+        <!-- Vendor Login Section -->
+        <div class="login-box" id="login-section">
+            <h2>🔑 वेंडर लॉगिन पैनल (Vendor Login)</h2>
+            <div id="login-form-area">
+                <div class="login-inputs">
+                    <input type="text" id="vendorId" placeholder="Vendor ID (जैसे: shop1)">
+                    <input type="password" id="vendorPass" placeholder="Password">
+                    <button class="login-btn" onclick="vendorLogin()">लॉगिन करें (Login)</button>
+                </div>
+            </div>
+            <div id="login-error" style="text-align:center; color:red; font-size:13px; margin-top:10px;"></div>
         </div>
 
-        <h4 style="margin-top: 25px; color: #2980b9;">PAN Related Requests (Find / Lost / Surrender)</h4>
-        <table>
-            <thead>
-                <tr>
-                    <th>ग्राहक का नाम</th>
-                    <th>नंबर / कूपन</th>
-                    <th>WhatsApp नं.</th>
-                    <th>स्टेटस</th>
-                    <th>Slip & e-PAN डाउनलोड / WhatsApp</th>
-                </tr>
-            </thead>
-            <tbody id="findPanTable">
-                <tr><td colspan="5" style="text-align:center; color:#7f8c8d;">डेटा लोड हो रहा है...</td></tr>
-            </tbody>
-        </table>
+        <!-- Hidden Download Panel (Vendor Dashboard) -->
+        <div id="vendor-panel">
+            <div class="download-box">
+                <button class="logout-btn" onclick="vendorLogout()">लॉग आउट (Logout)</button>
+                <h2 style="margin-bottom: 15px;">📥 वेंडर डैशबोर्ड (Vendor Dashboard)</h2>
+                <p id="welcome-shop-name" style="color: #28a745; font-weight: bold; text-align: center; margin-bottom: 15px;"></p>
+                
+                <!-- LIVE UPDATE BOARD -->
+                <div class="live-board">
+                    <h4>🟢 आपका लाइव अपडेट बोर्ड (Your Completed Works)</h4>
+                    <div id="liveUpdatesContainer"></div>
+                </div>
+
+                <!-- Status Update Box -->
+                <div class="status-update-box">
+                    <strong>📌 एडमिन स्टेटस नोट (Admin Update):</strong>
+                    <span id="adminStatusNote">सर्वर चालू है। आप केवल अपने द्वारा सबमिट किए गए रिकॉर्ड ही देख और सर्च कर सकते हैं।</span>
+                </div>
+
+                <!-- 1. Search Portal -->
+                <div class="panel-section">
+                    <h3>🔍 1. कूपन या नंबर सर्च करें (Live Search)</h3>
+                    <p style="font-size: 13px; color: #555; margin-bottom: 8px;">कूपन नंबर या 12 अंकों का नंबर दर्ज करें:</p>
+                    <div class="search-row">
+                        <input type="text" id="couponInput" placeholder="कूपन या नंबर लिखें">
+                        <button class="search-btn" onclick="searchSlip()">रिकॉर्ड खोजें</button>
+                    </div>
+                    <div id="result-area"></div>
+                </div>
+
+                <!-- 2. UPI QR Code & Total Count -->
+                <div class="panel-section">
+                    <h3>💳 2. भुगतान एवं कुल रिकॉर्ड (Payment & Total Count)</h3>
+                    <div class="flex-box">
+                        <div class="upi-box">
+                            <img src="181237.jpg" alt="Siddhant QR Code" id="mainQrImg">
+                            <p style="font-size: 11px; color: #555;">UPI ID:<br><code>siddhantaccoun1dabra@ptyes</code></p>
+                        </div>
+                        <div class="count-box">
+                            <h4>कुल PAN Card रिकॉर्ड (Total Count)</h4>
+                            <div class="count-number" id="totalPanCount">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. PAN FIND / LOST PAN CARD SERVICE SECTION -->
+                <div class="panel-section" style="border-color: #d9534f; background: #fffdfd;">
+                    <h3 style="color: #d9534f; border-color: #d9534f;">
+                        🔍 3. Pan Find / Lost PAN Card Service 
+                        <span class="price-badge lost">शुल्क: ₹100</span>
+                    </h3>
+                    <p style="font-size: 13px; color: #555; margin-bottom: 12px;">यदि पैन कार्ड खो गया है, तो ₹100 का भुगतान QR Code पर करें, विवरण भरकर सबमिट करें (24 घंटे में PDF मिलेगी)।</p>
+                    
+                    <form onsubmit="submitLostPan(event)" class="service-form">
+                        <div>
+                            <label>ग्राहक का पूरा नाम (Full Name)</label>
+                            <input type="text" id="lostName" placeholder="नाम दर्ज करें" required>
+                        </div>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <div style="flex: 1; min-width: 200px;">
+                                <label>पिता का नाम (Father's Name)</label>
+                                <input type="text" id="lostFather" placeholder="पिता का नाम" required>
+                            </div>
+                            <div style="flex: 1; min-width: 200px;">
+                                <label>जन्म तिथि (DOB)</label>
+                                <input type="date" id="lostDob" required>
+                            </div>
+                        </div>
+                        <div>
+                            <label>आईडी या पुराना मोबाइल नंबर</label>
+                            <input type="text" id="lostAadhaar" placeholder="आईडी या मोबाइल नंबर" required>
+                        </div>
+                        <div>
+                            <label>डॉक्यूमेंट अपलोड करें (Form photo)</label>
+                            <input type="file" id="lostDoc" required style="background: #fff; padding: 7px;">
+                        </div>
+
+                        <div class="payment-box-inline">
+                            <p style="font-size: 13px; color: #d9534f; font-weight: bold; margin-bottom: 5px;">💳 ₹100 भुगतान हेतु QR Code स्कैन करें</p>
+                            <img src="181237.jpg" alt="Payment QR" style="width: 110px; height: 110px;">
+                            <p style="font-size: 11px; color: #666; margin-bottom: 8px;">UPI ID: <code>siddhantaccoun1dabra@ptyes</code></p>
+                            <label style="display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: 14px; font-weight: bold; color: #333;">
+                                <input type="checkbox" id="paymentConfirm1" onchange="toggleBtn('paymentConfirm1', 'submitLostBtn')" style="width: 18px; height: 18px;"> 
+                                मैंने ₹100 पेमेंट कर दिया है (Payment Done)
+                            </label>
+                        </div>
+
+                        <button type="submit" id="submitLostBtn" class="submit-service-btn" disabled style="opacity: 0.5; cursor: not-allowed;">पैन फाइंड रिक्वेस्ट सबमिट करें (24 Hrs Delivery)</button>
+                    </form>
+                    <div id="lostPanMsg" style="margin-top: 10px; text-align: center; font-size: 14px; font-weight: bold;"></div>
+                </div>
+
+                <!-- 4. E-PAN DOWNLOAD SERVICE SECTION -->
+                <div class="panel-section" style="border-color: #28a745; background: #f4faf4;">
+                    <h3 style="color: #28a745; border-color: #28a745;">
+                        ⭐ 4. e-PAN Download Service 
+                        <span class="price-badge">शुल्क: ₹80</span>
+                    </h3>
+                    <p style="font-size: 13px; color: #555; margin-bottom: 12px;">यदि आपके पास पैन कार्ड नंबर है, तो ₹80 का भुगतान करें, पैन नंबर व विवरण भरकर सबमिट करें (24 घंटे में PDF मिलेगी)।</p>
+                    
+                    <form onsubmit="submitEpan(event)" class="service-form">
+                        <div>
+                            <label style="color: #28a745; font-weight: bold;">पैन कार्ड नंबर (PAN Card Number)</label>
+                            <input type="text" id="epanNumber" placeholder="जैसे: ABCDE1234F" style="text-transform: uppercase;" required>
+                        </div>
+                        <div>
+                            <label>ग्राहक का पूरा नाम (Full Name)</label>
+                            <input type="text" id="epanName" placeholder="पैन कार्ड के अनुसार नाम" required>
+                        </div>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <div style="flex: 1; min-width: 200px;">
+                                <label>पिता का नाम (Father's Name)</label>
+                                <input type="text" id="epanFather" placeholder="पिता का नाम" required>
+                            </div>
+                            <div style="flex: 1; min-width: 200px;">
+                                <label>जन्म तिथि (DOB)</label>
+                                <input type="date" id="epanDob" required>
+                            </div>
+                        </div>
+                        <div>
+                            <label>मोबाइल नंबर</label>
+                            <input type="tel" id="epanMobile" placeholder="मोबाइल नंबर" required>
+                        </div>
+                        <div>
+                            <label>डॉक्यूमेंट अपलोड करें (Slip photo)</label>
+                            <input type="file" id="epanDoc" required style="background: #fff; padding: 7px;">
+                        </div>
+
+                        <div class="payment-box-inline" style="border-color: #28a745;">
+                            <p style="font-size: 13px; color: #28a745; font-weight: bold; margin-bottom: 5px;">💳 ₹80 भुगतान हेतु QR Code स्कैन करें</p>
+                            <img src="181237.jpg" alt="Payment QR" style="width: 110px; height: 110px;">
+                            <p style="font-size: 11px; color: #666; margin-bottom: 8px;">UPI ID: <code>siddhantaccoun1dabra@ptyes</code></p>
+                            <label style="display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: 14px; font-weight: bold; color: #333;">
+                                <input type="checkbox" id="paymentConfirm2" onchange="toggleBtn('paymentConfirm2', 'submitEpanBtn')" style="width: 18px; height: 18px;"> 
+                                मैंने ₹80 पेमेंट कर दिया है (Payment Done)
+                            </label>
+                        </div>
+
+                        <button type="submit" id="submitEpanBtn" class="submit-service-btn" style="background-color: #28a745; opacity: 0.5; cursor: not-allowed;" disabled>e-PAN डाउनलोड रिक्वेस्ट सबमिट करें (24 Hrs Delivery)</button>
+                    </form>
+                    <div id="epanMsg" style="margin-top: 10px; text-align: center; font-size: 14px; font-weight: bold;"></div>
+                </div>
+
+                <!-- 5. SURRENDER PAN CARD SERVICE SECTION -->
+                <div class="panel-section" style="border-color: #6f42c1; background: #fbf9ff;">
+                    <h3 style="color: #6f42c1; border-color: #6f42c1;">
+                        🚫 5. Surrender PAN Card Service 
+                        <span class="price-badge surrender">शुल्क: ₹400</span>
+                    </h3>
+                    
+                    <div class="legal-warning">
+                        ⚠️ <b>कानूनी चेतावनी / Note:</b> आयकर नियम के अनुसार, यदि किसी भी व्यक्ति के पास 2 (दो) पैन कार्ड पाए जाते हैं, तो वह व्यक्ति <b>₹10,000 (दस हजार रुपये) जुर्माना</b> और <b>5 साल की सजा</b> का हकदार होगा। इसलिए तुरंत अतिरिक्त पैन कार्ड सरेंडर करें।
+                    </div>
+
+                    <p style="font-size: 13px; color: #555; margin-bottom: 12px;">अतिरिक्त या पुराना पैन कार्ड सरेंडर करने के लिए ₹400 का भुगतान करें, पैन नंबर व विवरण भरकर सबमिट करें।</p>
+                    
+                    <form onsubmit="submitSurrender(event)" class="service-form">
+                        <div>
+                            <label style="color: #6f42c1; font-weight: bold;">सरेंडर करने वाले पैन कार्ड का नंबर (PAN No. to Surrender)</label>
+                            <input type="text" id="surrenderPan" placeholder="जैसे: ABCDE1234F" style="text-transform: uppercase;" required>
+                        </div>
+                        <div>
+                            <label>ग्राहक का पूरा नाम (Full Name)</label>
+                            <input type="text" id="surrenderName" placeholder="पैन कार्ड के अनुसार नाम" required>
+                        </div>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <div style="flex: 1; min-width: 200px;">
+                                <label>पिता का नाम (Father's Name)</label>
+                                <input type="text" id="surrenderFather" placeholder="पिता का नाम" required>
+                            </div>
+                            <div style="flex: 1; min-width: 200px;">
+                                <label>जन्म तिथि (DOB)</label>
+                                <input type="date" id="surrenderDob" required>
+                            </div>
+                        </div>
+                        <div>
+                            <label>मोबाइल नंबर</label>
+                            <input type="tel" id="surrenderMobile" placeholder="मोबाइल नंबर" required>
+                        </div>
+                        <div>
+                            <label>डॉक्यूमेंट अपलोड करें (PAN Card Photo / Copy)</label>
+                            <input type="file" id="surrenderDoc" required style="background: #fff; padding: 7px;">
+                        </div>
+
+                        <div class="payment-box-inline" style="border-color: #6f42c1;">
+                            <p style="font-size: 13px; color: #6f42c1; font-weight: bold; margin-bottom: 5px;">💳 ₹400 भुगतान हेतु QR Code स्कैन करें</p>
+                            <img src="181237.jpg" alt="Payment QR" style="width: 110px; height: 110px;">
+                            <p style="font-size: 11px; color: #666; margin-bottom: 8px;">UPI ID: <code>siddhantaccoun1dabra@ptyes</code></p>
+                            <label style="display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: 14px; font-weight: bold; color: #333;">
+                                <input type="checkbox" id="paymentConfirm3" onchange="toggleBtn('paymentConfirm3', 'submitSurrenderBtn')" style="width: 18px; height: 18px;"> 
+                                मैंने ₹400 पेमेंट कर दिया है (Payment Done)
+                            </label>
+                        </div>
+
+                        <button type="submit" id="submitSurrenderBtn" class="submit-service-btn" style="background-color: #6f42c1; opacity: 0.5; cursor: not-allowed;" disabled>Surrender PAN रिक्वेस्ट सबमिट करें</button>
+                    </form>
+                    <div id="surrenderMsg" style="margin-top: 10px; text-align: center; font-size: 14px; font-weight: bold;"></div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- PUBLIC SECTION: New Vendor Registration Form -->
+        <div class="form-container" id="register">
+            <h2>✨ नया वेंडर रजिस्ट्रेशन फॉर्म (New Vendor Registration)</h2>
+            <p style="font-size: 13px; color: #555; margin-bottom: 15px; text-align: center;">यदि आप हमारे पोर्टल पर नए वेंडर के रूप में जुड़ना चाहते हैं, तो यह फॉर्म भरें:</p>
+            <form onsubmit="submitVendorRegistration(event)" class="service-form">
+                <div>
+                    <label>1. दुकान का नाम (Shop Name)</label>
+                    <input type="text" id="regShopName" placeholder="दुकान का नाम दर्ज करें" required>
+                </div>
+                <div>
+                    <label>2. दुकान के मालिक का नाम (Owner's Name)</label>
+                    <input type="text" id="regOwnerName" placeholder="मालिक का पूरा नाम दर्ज करें" required>
+                </div>
+                <div>
+                    <label>3. कांटेक्ट नंबर (Contact Number)</label>
+                    <input type="tel" id="regContact" placeholder="10 अंकों का मोबाइल नंबर" pattern="[0-9]{10}" required>
+                </div>
+                <div>
+                    <label>4. नंबर / आईडी (Number / ID Reference)</label>
+                    <input type="text" id="regIdNumber" placeholder="नंबर दर्ज करें" required>
+                </div>
+                <div>
+                    <label>5. डॉक्यूमेंट अपलोड करें (Upload Document / Photo)</label>
+                    <input type="file" id="regDoc" accept="image/*,.pdf" required style="background: #fff; padding: 7px;">
+                </div>
+                <button type="submit" class="submit-btn" style="background-color: #28a745; margin-top: 10px;">6. सबमिट करें (Submit)</button>
+            </form>
+            <div id="regMsg" style="margin-top: 10px; text-align: center; font-size: 14px; font-weight: bold;"></div>
+        </div>
+
+        <!-- TRACKING LINKS -->
+        <h2 class="section-title">🔍 महत्वपूर्ण ट्रैकिंग लिंक्स (Status Check)</h2>
+        <div class="tracking-grid">
+            <div class="tracking-card">
+                <h3>📌 UTI PAN Status</h3>
+                <a href="https://www.trackpan.utiitsl.com/PANONLINE/forms/TrackPan/trackApp" target="_blank" class="btn" style="margin-top:10px;">UTI स्टेटस देखें</a>
+            </div>
+            <div class="tracking-card">
+                <h3>📌 NSDL PAN Status</h3>
+                <a href="https://tin.tin.proteantech.in/pantan/StatusTrack.html" target="_blank" class="btn" style="margin-top:10px;">NSDL स्टेटस देखें</a>
+            </div>
+            <div class="tracking-card">
+                <h3>📦 India Post Speed Tracking</h3>
+                <a href="https://www.indiapost.gov.in/" target="_blank" class="btn" style="margin-top:10px;">स्पीड पोस्ट ट्रैक करें</a>
+            </div>
+        </div>
+
+        <!-- Services Section (Untouched) -->
+        <h2 class="section-title">हमारी सभी सेवाएं एवं शुल्क (Services & Charges)</h2>
+        <div class="services-grid">
+            <div class="service-card">
+                <div>
+                    <h3>🆔 PAN Card Service</h3>
+                    <div class="price">₹200.00</div>
+                    <p>New PAN, Correction, Update & Reprint.</p>
+                    <div class="details-box"><strong>डॉक्यूमेंट्स:</strong> आधार कार्ड, फोटो, मोबाइल, साइन</div>
+                </div>
+                <a href="#enquiry" class="btn">संपर्क करें</a>
+            </div>
+            <div class="service-card">
+                <div>
+                    <h3>🧾 GST Registration</h3>
+                    <div class="price">₹1,500.00</div>
+                    <p>Complete GST Registration Support.</p>
+                    <div class="details-box"><strong>डॉक्यूमेंट्स:</strong> पैन, आधार, फोटो, बैंक पासबुक</div>
+                </div>
+                <a href="#enquiry" class="btn">संपर्क करें</a>
+            </div>
+            <div class="service-card">
+                <div>
+                    <h3>📊 ITR Filing (Income Tax Return)</h3>
+                    <div class="price">₹600.00</div>
+                    <p>Fast, Secure & Compliant ITR Filing.</p>
+                    <div class="details-box"><strong>डॉक्यूमेंट्स:</strong> पैन, आधार, Form 16 / बैंक स्टेटमेंट</div>
+                </div>
+                <a href="#enquiry" class="btn">संपर्क करें</a>
+            </div>
+            <div class="service-card">
+                <div>
+                    <h3>📜 Gumasta Registration</h3>
+                    <div class="price">₹1,000.00</div>
+                    <p>Shop & Establishment License (1 दिन).</p>
+                    <div class="details-box"><strong>डॉक्यूमेंट्स:</strong> आधार, पैन, फोटो, एड्रेस प्रूफ</div>
+                </div>
+                <a href="#enquiry" class="btn">संपर्क करें</a>
+            </div>
+            <div class="service-card">
+                <div>
+                    <h3>🏢 Udyam / MSME Registration</h3>
+                    <div class="price">₹199.00</div>
+                    <p>Fast & Hassle-Free MSME Certificate.</p>
+                    <div class="details-box"><strong>डॉक्यूमेंट्स:</strong> आधार (OTP), पैन, मोबाइल & ईमेल</div>
+                </div>
+                <a href="#enquiry" class="btn">संपर्क करें</a>
+            </div>
+            <div class="service-card">
+                <div>
+                    <h3>💰 PF / EPF Withdrawal Service</h3>
+                    <div class="price">₹399.00</div>
+                    <p>Trusted & Professional PF Solution.</p>
+                    <div class="details-box"><strong>विशेषताएं:</strong> PF Withdrawal & EPF Assistance</div>
+                </div>
+                <a href="#enquiry" class="btn">संपर्क करें</a>
+            </div>
+            <div class="service-card">
+                <div>
+                    <h3>📖 Book Keeping Services</h3>
+                    <div class="price">Complete Solution</div>
+                    <p>Daily Sale-Purchase Entry, Balance Sheet.</p>
+                    <div class="details-box"><strong>डॉक्यूमेंट्स:</strong> Sale-Purchase Bills + Bank Statement</div>
+                </div>
+                <a href="#enquiry" class="btn">संपर्क करें</a>
+            </div>
+            <div class="service-card">
+                <div>
+                    <h3>💖 Marriage Biodata Service</h3>
+                    <div class="price">₹150.00</div>
+                    <p>Attractive Marriage Biodata (Hindi/English).</p>
+                    <div class="details-box"><strong>विशेषताएं:</strong> फोटो के साथ प्रीमियम डिज़ाइन</div>
+                </div>
+                <a href="#enquiry" class="btn">संपर्क करें</a>
+            </div>
+            <div class="service-card">
+                <div>
+                    <h3>📝 Professional Resume/CV Service</h3>
+                    <div class="price">₹100.00</div>
+                    <p>Professional Resume for Fresher & Experienced.</p>
+                    <div class="details-box"><b>विशेषताएं:</b> PDF + Print Ready फॉर्मेट</div>
+                </div>
+                <a href="#enquiry" class="btn">संपर्क करें</a>
+            </div>
+        </div>
+
+        <!-- Enquiry Form -->
+        <div class="form-container" id="enquiry">
+            <h2>कस्टमर इंक्वायरी फॉर्म (WhatsApp Inquiry)</h2>
+            <form onsubmit="sendToWhatsApp(event)">
+                <div class="form-group"><label>आपका नाम</label><input type="text" id="name" required></div>
+                <div class="form-group"><label>मोबाइल नंबर</label><input type="tel" id="phone" required></div>
+                <div class="form-group"><label>संदेश / सर्विस</label><textarea id="message" rows="3" required></textarea></div>
+                <button type="submit" class="submit-btn">WhatsApp पर मैसेज भेजें</button>
+            </form>
+        </div>
     </div>
-</div>
 
-<script>
-    const GOOGLE_SHEET_API = "YOUR_WEB_APP_URL_HERE"; // <--- यहाँ अपना नया वेब ऐप यूआरएल पेस्ट करें
-    let currentVendorId = "";
-    let globalData = [];
+    <footer><p>&copy; 2026 Siddhant Accounting Services Dabra. All rights reserved.</p></footer>
 
-    function loginVendor() {
-        let user = document.getElementById("loginUser").value;
-        let pass = document.getElementById("loginPass").value;
-        let msg = document.getElementById("loginMsg");
-
-        if(!user || !pass) {
-            msg.innerText = "कृपया यूजर आईडी और पासवर्ड दोनों भरें!";
-            return;
-        }
-
-        msg.innerText = "लॉगिन हो रहा है...";
-
-        fetch(`${GOOGLE_SHEET_API}?action=login&user=${encodeURIComponent(user)}&pass=${encodeURIComponent(pass)}`)
-        .then(res => res.json())
-        .then(data => {
-            if(data.status === "success") {
-                currentVendorId = user;
-                document.getElementById("login-section").classList.remove("active");
-                document.getElementById("dashboard-section").classList.add("active");
-                document.getElementById("welcomeMsg").innerText = "स्वागत है, " + data.shopName;
-                if(data.email) {
-                    document.getElementById("vendorEmailText").innerText = "ईमेल: " + data.email;
-                }
-                loadVendorData();
-            } else {
-                msg.innerText = "गलत यूजर आईडी, पासवर्ड या अकाउंट निष्क्रिय है!";
-            }
-        })
-        .catch(err => {
-            msg.innerText = "सर्वर से कनेक्ट करने में त्रुटि हुई!";
-        });
-    }
-
-    function submitServiceRequest() {
-        let type = document.getElementById("serviceType").value;
-        let custName = document.getElementById("custName").value;
-        let docNum = document.getElementById("docNum").value;
-        let custPhone = document.getElementById("custPhone").value;
-        let msg = document.getElementById("reqMsg");
-
-        if(!custName || !docNum) {
-            alert("कृपया ग्राहक का नाम और कूपन/आधार नंबर भरें!");
-            return;
-        }
-
-        let postData = { 
-            type: type, 
-            vendorId: currentVendorId, 
-            customerName: custName, 
-            docNumber: docNum,
-            custPhone: custPhone 
+    <script>
+        const demoVendors = {
+            "shop1": { pass: "12345", name: "Siddhant Shop 1", count: 18 },
+            "shop2": { pass: "abcde", name: "Shop 2", count: 12 },
+            "shop3": { pass: "shop333", name: "Shop 3", count: 25 },
+            "shop4": { pass: "shop444", name: "Shop 4", count: 9 }
         };
 
-        fetch(GOOGLE_SHEET_API, {
-            method: 'POST',
-            mode: 'no-cors',
-            body: JSON.stringify(postData)
-        }).then(() => {
-            msg.innerText = "रिक्वेस्ट सफलतापूर्वक सबमिट हो गई!";
-            document.getElementById("custName").value = "";
-            document.getElementById("docNum").value = "";
-            document.getElementById("custPhone").value = "";
-            setTimeout(() => { msg.innerText = ""; loadVendorData(); }, 2000);
-        }).catch(err => {
-            alert("सबमिट करने में समस्या आई!");
-        });
-    }
+        let currentLoggedInShop = "";
+        const GOOGLE_SHEET_API = "https://script.google.com/macros/s/AKfycbxZWmHr8JXUv_ZyuqmDVpmpl99YrT0RzJDO2diZkguB4S4a6RZe3dw_9bBDKBpLt0TB/exec"; 
 
-    function loadVendorData() {
-        if(!currentVendorId) return;
-
-        fetch(`${GOOGLE_SHEET_API}?action=getData&vendorId=${encodeURIComponent(currentVendorId)}`)
-        .then(res => res.json())
-        .then(data => {
-            // सभी सर्विसेज के डेटा को एक साथ जोड़ रहे हैं ताकि वेंडर को एक ही जगह सारा रिकॉर्ड दिखे
-            globalData = [...(data.findPan || []), ...(data.lostPan || []), ...(data.surrender || [])];
-            renderTable(globalData);
-        });
-    }
-
-    function renderTable(rows) {
-        let tbody = document.getElementById("findPanTable");
-        tbody.innerHTML = "";
-        if(!rows || rows.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#7f8c8d;">कोई रिकॉर्ड नहीं मिला</td></tr>`;
-            return;
+        function scrollToLogin() {
+            document.getElementById('login-section').scrollIntoView({ behavior: 'smooth' });
         }
-        rows.forEach(r => {
-            let slipHtml = `<span class="pending-text">स्लिप: प्रतीक्षा करें (1-2 दिन)</span>`;
-            if (r.slipLink) {
-                slipHtml = `<a href="${r.slipLink}" target="_blank" class="dl-btn">📥 स्लिप डाउनलोड</a>`;
+
+        function vendorLogin() {
+            let id = document.getElementById('vendorId').value.trim();
+            let pass = document.getElementById('vendorPass').value.trim();
+            let errorBox = document.getElementById('login-error');
+
+            if(!id || !pass) {
+                errorBox.innerHTML = "कृपया वेंडर आईडी और पासवर्ड दोनों दर्ज करें!";
+                return;
             }
 
-            let epanHtml = `<span class="pending-text">e-PAN: अभी जनरेट नहीं हुआ</span>`;
-            if (r.ePanLink) {
-                epanHtml = `<a href="${r.ePanLink}" target="_blank" class="dl-btn" style="background:#8e44ad;">📥 e-PAN डाउनलोड</a>`;
+            if (demoVendors[id] && demoVendors[id].pass === pass) {
+                errorBox.innerHTML = "";
+                currentLoggedInShop = id;
+                document.getElementById('login-section').style.display = "none";
+                document.getElementById('vendor-panel').style.display = "block";
+                document.getElementById('welcome-shop-name').innerHTML = `स्वागत है: ${demoVendors[id].name} (${id})`;
+                document.getElementById('totalPanCount').innerHTML = demoVendors[id].count;
+                
+                loadVendorLiveUpdates(id);
+            } else {
+                errorBox.innerHTML = "गलत Vendor ID या Password है! (Demo: shop1 / 12345)";
+            }
+        }
+
+        function submitVendorRegistration(event) {
+            event.preventDefault();
+            let shopName = document.getElementById('regShopName').value;
+            let ownerName = document.getElementById('regOwnerName').value;
+            let contact = document.getElementById('regContact').value;
+            let idNum = document.getElementById('regIdNumber').value;
+            
+            let msgBox = document.getElementById('regMsg');
+            msgBox.innerHTML = `<span style="color: green;">✅ धन्यवाद ${ownerName}! आपकी दुकान (${shopName}) के रजिस्ट्रेशन की रिक्वेस्ट सफलतापूर्वक सबमिट हो गई है।</span>`;
+            
+            event.target.reset();
+        }
+
+        function loadVendorLiveUpdates(shopId) {
+            let container = document.getElementById('liveUpdatesContainer');
+            if(shopId === "shop1") {
+                container.innerHTML = `
+                    <div class="update-item">
+                        ✅ <b>आवेदक:</b> राहुल शर्मा | <b>सर्विस:</b> e-PAN Download<br>
+                        <span style="color: #2e7d32; font-weight: bold;">आपका पैनकार्ड का कार्य सफलतापूर्वक अप्लाई हो गया है!</span>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `
+                    <div class="update-item">
+                        ✅ <b>आवेदक:</b> प्रिया गुप्ता | <b>सर्विस:</b> Pan Find<br>
+                        <span style="color: #2e7d32; font-weight: bold;">आपका पैनकार्ड का कार्य सफलतापूर्वक अप्लाई हो गया है!</span>
+                    </div>
+                `;
+            }
+        }
+
+        function vendorLogout() {
+            document.getElementById('vendor-panel').style.display = "none";
+            document.getElementById('login-section').style.display = "block";
+            document.getElementById('vendorId').value = "";
+            document.getElementById('vendorPass').value = "";
+            document.getElementById('login-error').innerHTML = "";
+            document.getElementById('result-area').innerHTML = "";
+            currentLoggedInShop = "";
+        }
+
+        function sendToWhatsApp(event) {
+            event.preventDefault();
+            let name = document.getElementById('name').value;
+            let phone = document.getElementById('phone').value;
+            let message = document.getElementById('message').value;
+            let url = `https://wa.me/919425000000?text=Namaste,%20Mera%20naam%20${encodeURIComponent(name)}%20hai.%20Query:%20${encodeURIComponent(message)}`;
+            window.open(url, '_blank');
+        }
+
+        function searchSlip() {
+            let query = document.getElementById('couponInput').value.trim();
+            let resultArea = document.getElementById('result-area');
+
+            if(!query) {
+                resultArea.innerHTML = "<span style='color:red;'>कृपया कूपन या नंबर दर्ज करें!</span>";
+                return;
             }
 
-            let waText = encodeURIComponent(`नमस्ते ${r.customerName}, आपका डॉक्यूमेंट / स्लिप तैयार है।`);
-            let waLink = r.custPhone ? `https://wa.me/91${r.custPhone}?text=${waText}` : `https://wa.me/?text=${waText}`;
-            let waBtnHtml = `<a href="${waLink}" target="_blank" class="wa-btn">💬 WhatsApp भेजें</a>`;
+            resultArea.innerHTML = "रिकॉर्ड खोजा जा रहा है...";
 
-            tbody.innerHTML += `<tr>
-                <td><b>${r.customerName}</b></td>
-                <td>${r.docNumber}</td>
-                <td>${r.custPhone || 'N/A'}</td>
-                <td><span style="color: #27ae60; font-weight: bold;">${r.status}</span></td>
-                <td>${slipHtml}<br>${epanHtml}<br>${waBtnHtml}</td>
-            </tr>`;
-        });
-    }
+            setTimeout(() => {
+                resultArea.innerHTML = `
+                    <div class="result-card">
+                        <p style="margin-bottom:8px;">वेंडर आईडी: <b>${currentLoggedInShop}</b> | खोज: <strong>"${query}"</strong></p>
+                        <p style="color: green; font-weight: bold; margin-bottom: 8px;">🟢 स्टेटस: आपका पैनकार्ड का कार्य सफलतापूर्वक अप्लाई हो गया है!</p>
+                        <p style="font-size: 13px; margin-bottom: 10px;"><b>आवेदक का नाम:</b> राहुल शर्मा</p>
+                        <div class="dl-btn-group">
+                            <div class="dl-row">
+                                <a href="#" target="_blank" class="dl-btn">📄 स्लिप डाउनलोड</a>
+                                <a href="#" target="_blank" class="dl-btn epan">⭐ ई-पैन PDF डाउनलोड</a>
+                            </div>
+                            <div class="wa-send-section">
+                                <input type="tel" id="customerWaPhone" placeholder="ग्राहक का मोबाइल नंबर (जैसे: 919876543210)" pattern="[0-9]{10,12}">
+                                <button class="wa-send-btn" onclick="sendSlipToCustomerWhatsApp('${query}')">💬 WhatsApp पर स्लिप/ई-पैन भेजें</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }, 500);
+        }
 
-    function filterTables() {
-        let query = document.getElementById("searchBox").value.toLowerCase();
-        let filtered = globalData.filter(r => 
-            r.customerName.toLowerCase().includes(query) || 
-            r.docNumber.toLowerCase().includes(query) || 
-            (r.custPhone && r.custPhone.toLowerCase().includes(query))
-        );
-        renderTable(filtered);
-    }
+        function sendSlipToCustomerWhatsApp(queryId) {
+            let phoneInput = document.getElementById('customerWaPhone').value.trim();
+            if(!phoneInput || phoneInput.length < 10) {
+                alert("कृपया ग्राहक का सही मोबाइल नंबर दर्ज करें!");
+                return;
+            }
+            let msg = `Namaste, Siddhant Accounting Services Dabra se aapka PAN card ka kaam safal ho gaya hai. (Query/Coupon: ${queryId}). Kripya apna slip/e-PAN prapt karein.`;
+            let waUrl = `https://wa.me/${phoneInput}?text=${encodeURIComponent(msg)}`;
+            window.open(waUrl, '_blank');
+        }
 
-    function logout() {
-        currentVendorId = "";
-        document.getElementById("dashboard-section").classList.remove("active");
-        document.getElementById("login-section").classList.add("active");
-        document.getElementById("loginUser").value = "";
-        document.getElementById("loginPass").value = "";
-    }
-</script>
+        function toggleBtn(checkboxId, btnId) {
+            let checkbox = document.getElementById(checkboxId);
+            let btn = document.getElementById(btnId);
+            if (checkbox.checked) {
+                btn.disabled = false;
+                btn.style.opacity = "1";
+                btn.style.cursor = "pointer";
+            } else {
+                btn.disabled = true;
+                btn.style.opacity = "0.5";
+                btn.style.cursor = "not-allowed";
+            }
+        }
 
+        function submitLostPan(event) {
+            event.preventDefault();
+            let msgBox = document.getElementById('lostPanMsg');
+            msgBox.innerHTML = `<span style="color: green;">✅ आपकी Pan Find रिक्वेस्ट सबमिट हो गई है!<br>वेंडर: <b>${currentLoggedInShop}</b> | ⏱️ 24 घंटे में PDF मिल जाएगी।</span>`;
+            event.target.reset();
+            document.getElementById('paymentConfirm1').checked = false;
+            document.getElementById('submitLostBtn').disabled = true;
+            document.getElementById('submitLostBtn').style.opacity = "0.5";
+        }
+
+        function submitEpan(event) {
+            event.preventDefault();
+            let panNum = document.getElementById('epanNumber').value.toUpperCase();
+            let msgBox = document.getElementById('epanMsg');
+            msgBox.innerHTML = `<span style="color: green;">✅ PAN No: <b>${panNum}</b> की e-PAN रिक्वेस्ट सबमिट हो गई है!<br>वेंडर: <b>${currentLoggedInShop}</b> | ⏱️ 24 घंटे में PDF मिल जाएगी।</span>`;
+            event.target.reset();
+            document.getElementById('paymentConfirm2').checked = false;
+            document.getElementById('submitEpanBtn').disabled = true;
+            document.getElementById('submitEpanBtn').style.opacity = "0.5";
+        }
+
+        function submitSurrender(event) {
+            event.preventDefault();
+            let panNum = document.getElementById('surrenderPan').value.toUpperCase();
+            let msgBox = document.getElementById('surrenderMsg');
+            msgBox.innerHTML = `<span style="color: purple;">✅ PAN No: <b>${panNum}</b> की Surrender PAN रिक्वेस्ट दर्ज हो गई है!<br>वेंडर: <b>${currentLoggedInShop}</b></span>`;
+            event.target.reset();
+            document.getElementById('paymentConfirm3').checked = false;
+            document.getElementById('submitSurrenderBtn').disabled = true;
+            document.getElementById('submitSurrenderBtn').style.opacity = "0.5";
+        }
+    </script>
 </body>
 </html>
-
